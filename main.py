@@ -11,6 +11,7 @@ from sklearn.externals import joblib
 
 #open data file
 def get_data( filename ):
+	print("given filename: ", filename)
     data = pd.read_csv( filename, index_col=0 )
     return data
 
@@ -69,6 +70,15 @@ def display_data( data ):
 	plt.subplot( 4,4,14 )
 	plt.bar(data.x7,data.labels)
 	plt.title('x7 Bar')
+
+
+	plt.subplot( 4,4,15 )
+	plt.scatter(data.x8,data.labels)
+	plt.title('x8 Scatter')
+	plt.subplot( 4,4,16 )
+	plt.bar(data.x8,data.labels)
+	plt.title('x8 Bar')
+
 	plt.suptitle( "Plotting" )
 
 	#plot adjustment (padding) (top, bot window space, hspace and w spance padding between graphs)
@@ -147,29 +157,30 @@ def save_to_joblib(reg):
 def main( ):
 	print("Reading data...")
 	#numpy show
-	cut_data = get_data("cut_mo.csv")
-	display_data(cut_data)
-	#printing scalers to know the train_x values to find correlations
-	data_train = get_data( "mo_train.csv" )
-	#display_data("data_train")
-	train_X_raw, train_Y = separate_predictors_and_labels( data_train )
-	train_X, scaler = scale_predictors( train_X_raw )
-	print ("Train_X_RAW")
-	print( train_X_raw )
-	print ("train_X")
-	print( train_X )
-	print ("sclaer")
-	print( scaler )
-	reg = fit( train_X, train_Y )
-	#train_X.to_csv("train_X.csv")
-	#print(data.labels)
-	data_test = get_data( "mo_test.csv" )
-	test_X_raw, test_Y = separate_predictors_and_labels( data_test )
-	test_X_raw = test_X_raw.astype( 'float64' )
-	test_X = scaler.transform( test_X_raw )
-	test( test_X, test_Y, reg )
-	#Dump data into joblib 
-	save_to_joblib(reg)
+	raw_data = get_data("data.csv")
+
+	display_data(raw_data)
+	# #printing scalers to know the train_x values to find correlations
+	# data_train = get_data( "mo_train.csv" )
+	# #display_data("data_train")
+	# train_X_raw, train_Y = separate_predictors_and_labels( data_train )
+	# train_X, scaler = scale_predictors( train_X_raw )
+	# print ("Train_X_RAW")
+	# print( train_X_raw )
+	# print ("train_X")
+	# print( train_X )
+	# print ("sclaer")
+	# print( scaler )
+	# reg = fit( train_X, train_Y )
+	# #train_X.to_csv("train_X.csv")
+	# #print(data.labels)
+	# data_test = get_data( "mo_test.csv" )
+	# test_X_raw, test_Y = separate_predictors_and_labels( data_test )
+	# test_X_raw = test_X_raw.astype( 'float64' )
+	# test_X = scaler.transform( test_X_raw )
+	# test( test_X, test_Y, reg )
+	# #Dump data into joblib 
+	# save_to_joblib(reg)
 
 	return
 
