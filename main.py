@@ -12,16 +12,18 @@ from sklearn.externals import joblib
 #open data file
 def get_data( filename ):
 	print("given filename: ", filename)
-    data = pd.read_csv( filename, index_col=0 )
-    return data
+	#we have added index_col to none to not ignore any col unlike first assignment
+	data = pd.read_csv( filename, index_col=None )
+	#print(data.columns.values)
+	return data
 
 #display data 
 def display_data( data ):
 	#setting figure 1 
 	plt.figure( 1, figsize=(9,6) )
-	# subplot in 3x3 grid, position 1
+	#subplot in 3x3 grid, position 1
 	plt.subplot(4, 4, 1 )
-	plt.plot( data.x1,data.labels)
+	plt.scatter( data.x1,data.labels)
 	plt.title('x1 Scatter')
     # subplot in 3x3 grid, position 2
 	plt.subplot( 4, 4, 2 )
