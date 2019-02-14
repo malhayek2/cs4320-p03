@@ -21,65 +21,65 @@ def get_data( filename ):
 def display_data( data ):
 	#setting figure 1 
 	plt.figure( 1, figsize=(9,6) )
-	#subplot in 3x3 grid, position 1
+	#subplot in 3Fly_Ash grid, position 1
 	plt.subplot(4, 4, 1 )
-	plt.scatter( data.x1,data.labels)
-	plt.title('x1 Scatter')
-    # subplot in 3x3 grid, position 2
+	plt.scatter( data.Cement,data.Concrete_compressive_strength)
+	plt.title('Cement Scatter')
+    # subplot in 3Fly_Ash grid, position 2
 	plt.subplot( 4, 4, 2 )
-	plt.bar( data.x1,data.labels)
-	plt.title('x1 Bar')
+	plt.bar( data.Cement,data.Concrete_compressive_strength)
+	plt.title('Cement Bar')
 	
 	plt.subplot( 4, 4, 3 )
-	plt.scatter( data.x2,data.labels)
-	plt.title('x2 Scatter')
+	plt.scatter( data.Blast_Furnace_Slag,data.Concrete_compressive_strength)
+	plt.title('Blast_Furnace_Slag Scatter')
 	plt.subplot( 4, 4, 4 )
-	plt.bar( data.x2,data.labels)
-	plt.title('x2 Bar')
+	plt.bar( data.Blast_Furnace_Slag,data.Concrete_compressive_strength)
+	plt.title('Blast_Furnace_Slag Bar')
 
 	plt.subplot( 445 )
-	plt.scatter(data.x3, data.labels)
-	plt.title('x3 Scatter')
+	plt.scatter(data.Fly_Ash, data.Concrete_compressive_strength)
+	plt.title('Fly_Ash Scatter')
 	plt.subplot( 446 )
-	plt.bar(data.x3, data.labels)
-	plt.title('x3 Bar')
+	plt.bar(data.Fly_Ash, data.Concrete_compressive_strength)
+	plt.title('Fly_Ash Bar')
 
 	plt.subplot( 447 )
-	plt.scatter( data.x4,data.labels)
-	plt.title('x4 Scatter')
+	plt.scatter( data.water,data.Concrete_compressive_strength)
+	plt.title('water Scatter')
 	plt.subplot( 448 )
-	plt.bar( data.x4,data.labels)
-	plt.title('x4 Bar')
+	plt.bar( data.water,data.Concrete_compressive_strength)
+	plt.title('water Bar')
 
 	plt.subplot( 449 )
-	plt.scatter( data.x5,data.labels)
-	plt.title('x5 Scatter')
+	plt.scatter( data.Superplasticizer,data.Concrete_compressive_strength)
+	plt.title('Superplasticizer Scatter')
 	plt.subplot( 4,4,10 )
-	plt.bar(data.x5, data.labels )
-	plt.title('x5 Bar')
+	plt.bar(data.Superplasticizer, data.Concrete_compressive_strength )
+	plt.title('Superplasticizer Bar')
 
 
 	plt.subplot( 4,4,11 )
-	plt.scatter( data.x6,data.labels)
-	plt.title('x6 Scatter')
+	plt.scatter( data.Coarse_Aggregate,data.Concrete_compressive_strength)
+	plt.title('Coarse_Aggregate Scatter')
 	plt.subplot( 4,4,12 )
-	plt.bar( data.x6,data.labels)
-	plt.title('x6 Bar')
+	plt.bar( data.Coarse_Aggregate,data.Concrete_compressive_strength)
+	plt.title('Coarse_Aggregate Bar')
 
 	plt.subplot( 4,4,13 )
-	plt.scatter(data.x7,data.labels)
-	plt.title('x7 Scatter')
+	plt.scatter(data.Fine_Aggregate,data.Concrete_compressive_strength)
+	plt.title('Fine_Aggregate Scatter')
 	plt.subplot( 4,4,14 )
-	plt.bar(data.x7,data.labels)
-	plt.title('x7 Bar')
+	plt.bar(data.Fine_Aggregate,data.Concrete_compressive_strength)
+	plt.title('Fine_Aggregate Bar')
 
 
 	plt.subplot( 4,4,15 )
-	plt.scatter(data.x8,data.labels)
-	plt.title('x8 Scatter')
+	plt.scatter(data.Age,data.Concrete_compressive_strength)
+	plt.title('Age Scatter')
 	plt.subplot( 4,4,16 )
-	plt.bar(data.x8,data.labels)
-	plt.title('x8 Bar')
+	plt.bar(data.Age,data.Concrete_compressive_strength)
+	plt.title('Age Bar')
 
 	plt.suptitle( "Plotting" )
 
@@ -96,10 +96,10 @@ def split_data( data, ratio ):
     return
 
 
-def separate_predictors_and_labels( data ):
-    predictors_X = data.drop( "labels", axis=1 )
-    labels_Y = data[ "labels" ].copy( )
-    return predictors_X, labels_Y
+def separate_predictors_and_Concrete_compressive_strength( data ):
+    predictors_X = data.drop( "Concrete_compressive_strength", axis=1 )
+    Concrete_compressive_strength_Y = data[ "Concrete_compressive_strength" ].copy( )
+    return predictors_X, Concrete_compressive_strength_Y
 
 def scale_predictors( X ):
     X = X.astype( 'float64' )
@@ -135,15 +135,15 @@ def test( X, Y, reg ):
 
 def cleanData():
 	data = get_data("mo.csv")
-	data = data[(data.x1 < 225 )&(data.x1 >= 40)]
-	data = data[(data.x2 < 50 )&(data.x2 >= 30)]
+	data = data[(data.Cement < 225 )&(data.Cement >= 40)]
+	data = data[(data.Blast_Furnace_Slag < 50 )&(data.Blast_Furnace_Slag >= 30)]
 	#-99 isnt working ?
-	data = data[(data.x3 < 150 )&(data.x3 > -99)]
-	data = data[(data.x4 < 130 )&(data.x4 >= 40)]
-	data = data[(data.x5 >= 1)]
-	data = data[(data.x6 < 100 )]
-	#x7 looks somewhat clean at this point 
-	data = data[ ( data.labels > -2000 ) ]
+	data = data[(data.Fly_Ash < 150 )&(data.Fly_Ash > -99)]
+	data = data[(data.water < 130 )&(data.water >= 40)]
+	data = data[(data.Superplasticizer >= 1)]
+	data = data[(data.Coarse_Aggregate < 100 )]
+	#Fine_Aggregate looks somewhat clean at this point 
+	data = data[ ( data.Concrete_compressive_strength > -2000 ) ]
 	#save new clean data
 	data.to_csv( 'cut_mo.csv' )
 	newData = get_data("cut_mo.csv")
@@ -175,7 +175,7 @@ def main( ):
 	# print( scaler )
 	# reg = fit( train_X, train_Y )
 	# #train_X.to_csv("train_X.csv")
-	# #print(data.labels)
+	# #print(data.Concrete_compressive_strength)
 	# data_test = get_data( "mo_test.csv" )
 	# test_X_raw, test_Y = separate_predictors_and_labels( data_test )
 	# test_X_raw = test_X_raw.astype( 'float64' )
