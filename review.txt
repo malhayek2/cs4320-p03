@@ -1,12 +1,12 @@
 after having the train data..
 we do perprocessing (one pipline):
-1- perdicotors (scale limits to 0-1), selector (what labels to keep)
-2- another pipline (labels any feature to cut off) as of now NONE
+1- perdicotors (scale limits to 0-1), selector (what labels to keep) = check
+2- another pipline (labels any feature to cut off) as of now NONE = check
 
-get degree perameter that goes into the panomioal feature pipline.
+get degree perameter that goes into the panomioal feature pipline. = ???
 =================================estimator (linear regression or other types there is 3)
 
-take the same pipline of the 1. after it has been scaled.
+take the same pipline of the 1. after it has been scaled. = check
 alpha value 
 L1 ratio perameter.
 
@@ -15,9 +15,11 @@ L1 ratio perameter.
 kfold is how accurate it is... 2 is fast 1000 takes a while.
 you use from sklearn.model_selection.cross_valscore(P,train_Data, L.fit_transform(train_data), kfold,scoring="nug_mean_squre") #kfold is an object
 retruns a list of floating numbers as a score from the fold.
-... create a funtion that takes alpha and L1 and use the cross val core and print the returned floating numbers.
+... create a funtion that takes alpha and L1 and use the cross val core and print the returned floating numbers. 
+=CHECK
 
 param_grind = is a dic = 
+param the key is the param name and the value is a list of value that should be searched for that value
 create one of grindSearchCV object that needs (estmator(P), param_grind,...)
 return to sklearn website for parameters details
 refit = true.

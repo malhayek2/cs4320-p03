@@ -8,7 +8,10 @@ import sklearn.metrics
 from sklearn.externals import joblib
 import sklearn.pipeline
 import math
-
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+from time import time
 
 #open data file
 def get_data( filename ):
@@ -284,6 +287,8 @@ def display_histograms( predictor_data, label_data, basename ):
     
     return
 
+
+
 def display_predicted_slopes( predictor_data, label_data, predicted_label_data, basename ):
     # predictor_data is a numpy.array with 7 features
     # label_data is a pandas.DataFrame with 1 column, "labels"
@@ -351,9 +356,11 @@ def main( ):
 	label_pipeline = make_label_pipeline( )
 	predictors_processed = predictor_pipeline.fit_transform( train_data )
 	labels_processed = label_pipeline.fit_transform( train_data )
+
 	if do_plot:
 		display_data( predictors_processed, labels_processed, "data" )
-
+		#display_data(train_X, labels_processed, "train_X")
+	# Estimator doing linear regression from processed data. ! 
 	if do_fit:
 		linear_regression = sklearn.linear_model.LinearRegression( )
 		linear_regression.fit( predictors_processed, labels_processed )
@@ -362,22 +369,82 @@ def main( ):
 		print( "LinearR intercepts: ", linear_regression.intercept_ )
 
 	if do_fit and do_plot:
+		#housing_predi
 		training_labels_predicted = linear_regression.predict( predictors_processed )
 		display_predicted_data( predictors_processed, labels_processed, training_labels_predicted, "data-predicted" )
 	
 
+	mean_squared_error = sklearn.metrics.mean_squared_error( labels_processed, training_labels_predicted )
+	root_mean_squared_error = np.sqrt( mean_squared_error )
+	print( "Error: " + str( root_mean_squared_error ) )
 
+	#(P,train_Data, L.fit_transform(train_data), kfold,scoring="neg_mean_squre")
+	cross_valScore_train = cross_val_score( linear_regression,  predictors_processed ,labels_processed,cv=10, scoring = 'neg_mean_squared_error')
+	# print(valScore)
 
-	# reg = fit( train_X, train_Y )
-	# #train_X.to_csv("train_X.csv")
-	# #print(data.Concrete_compressive_strength)
-	# data_test = get_data( "mo_test.csv" )
-	# test_X_raw, test_Y = separate_predictors_and_labels( data_test )
-	# test_X_raw = test_X_raw.astype( 'float64' )
-	# test_X = scaler.transform( test_X_raw )
-	# test( test_X, test_Y, reg )
-	# #Dump data into joblib 
-	# save_to_joblib(reg)
+	print("mean score cross val train :" , cross_valScore_train.mean())
+	#/***param_grid ***/ 
+	#### whats my grid parmas? 
+	#print("para: " ,  linear_regression.get_params().keys())
+	#para:  dict_keys(['copy_X', 'fit_intercept', 'n_jobs', 'normalize'])
+
+	param_grid = [{'copy_X' : [0.0075,0.01, 0.075 ,0.15 , 0.25,0.5, 1 ,10] , 'fit_intercept' : [0.0075,0.01,0.075 ,0.15, 2, 4,6,8], 'n_jobs' : [0.0075,0.01,0.075 ,0.15, 0.5,1,2,4], 'normalize' : [0.0075,0.01,0.075 ,0.15, 0.5,1,2,4,6] }]
+	print("Running gridSearchCV ... ")
+	grid_search = GridSearchCV(linear_regression, param_grid, cv=10,scoring='neg_mean_squared_error', refit= True, n_jobs=-1)
+	#fit it 
+	grid_search.fit(predictors_processed, labels_processed)
+	#best param
+	score_gridCV = grid_search.best_score_ 
+	best_params_gridCV = grid_search.best_params_
+	best_est_gridCV = grid_search.best_estimator_
+	#cv_results = grid_search.cv_results_
+	print("Best GridSearchCV Params : ", best_params )
+	print("Best GridSearchCV Estimator :" , best_est )
+	print("Best GridSearchCV Score  " , score )
+	#print("results : " , cv_results )
+	# Test this estimator with our test data. 
+	final__gridCV_model_est = grid_search.best_estimator_
+    # first try it in corss val score
+    valScore_est_grid = cross_val_score( final__gridCV_model_est,  predictors_processed ,labels_processed,cv=10, scoring = 'neg_mean_squared_error')
+	print("mean socre of GridSearchCV estimator using cross val :  " , valScore_est_grid.mean())
+	# use the estimator against our fit test data ! 
+	predictor_pipeline_test = make_predictor_pipeline( )
+	label_pipeline_test = make_label_pipeline( )
+	predictors_processed_test = predictor_pipeline_test.fit_transform( test_data )
+	labels_processed_test = label_pipeline_test.fit_transform( test_data )
+	
+	final_predictions = final__gridCV_model_est.predict(predictors_processed_test)
+	mean_squared_error_test = sklearn.metrics.mean_squared_error( labels_processed_test, final_predictions )
+	root_mean_squared_error_test = np.sqrt( mean_squared_error_test )
+	print( "Error Test Data Using GridSearchCV: " + str( root_mean_squared_error_test ) )
+
+	### DO THIS ALL OVER AGAIN WITH RANDMOIZED randmizedSearchCV
+	#because why not
+	print("Running RandomizedSearchCV...")
+	n_iter_search = 20
+	random_search = RandomizedSearchCV(linear_regression, param_distributions=param_grid,n_iter=n_iter_search, cv=10)
+	start = time()
+	#Fit it 
+	random_search.fit(predictors_processed, labels_processed)
+	#results ! 
+	score_rand_search = random_search.best_score_ 
+	best_params_rand_search = random_search.best_params_
+	best_est_rand_search = random_search.best_estimator_
+	#cv_results = random_search.cv_results_
+	print("Best RandomizedSearchCV Params : ", best_params_rand_search )
+	print("Best RandomizedSearchCV Estimator :" , best_est_rand_search )
+	print("Best RandomizedSearchCV score: " , score_rand_search )
+
+	final__randCV_model_est = grid_search.best_estimator_
+    # first try it in corss val score
+    valScore_est_rand = cross_val_score( final__randCV_model_est,  predictors_processed ,labels_processed,cv=10, scoring = 'neg_mean_squared_error')
+	print("mean socre of RandomizedSearchCV estimator using cross val  :  " , valScore_est_rand.mean())
+	# use the randmoized estimator against fit test data
+	final_predictions01 = final__randCV_model_est.predict(predictors_processed_test)
+	mean_squared_error_test01 = sklearn.metrics.mean_squared_error( labels_processed_test, final_predictions01 )
+	root_mean_squared_error_test01 = np.sqrt( mean_squared_error_test01 )
+	print( "Error Test Data Using RandomizedSearchCV: " + str( root_mean_squared_error_test01 ) )
+
 
 	return
 
