@@ -1,0 +1,48 @@
+after having the train data..
+we do perprocessing (one pipline):
+1- perdicotors (scale limits to 0-1), selector (what labels to keep)
+2- another pipline (labels any feature to cut off) as of now NONE
+
+get degree perameter that goes into the panomioal feature pipline.
+=================================estimator (linear regression or other types there is 3)
+
+take the same pipline of the 1. after it has been scaled.
+alpha value 
+L1 ratio perameter.
+
+
+================================using both pipleine 
+kfold is how accurate it is... 2 is fast 1000 takes a while.
+you use from sklearn.model_selection.cross_valscore(P,train_Data, L.fit_transform(train_data), kfold,scoring="nug_mean_squre") #kfold is an object
+retruns a list of floating numbers as a score from the fold.
+... create a funtion that takes alpha and L1 and use the cross val core and print the returned floating numbers.
+
+param_grind = is a dic = 
+create one of grindSearchCV object that needs (estmator(P), param_grind,...)
+return to sklearn website for parameters details
+refit = true.
+CV = kfold number.
+
+/***param_grid ***/ 
+element_alpha = [0.5,0.] 
+element_l1ratio = [list of numbers.]
+he named it palnomial__dgree 
+/****/
+grid = grindSearchCV()
+grind.fit(train_data, L.fit_transform(train_Data))
+
+
+/***/
+inspect best_estator, best_score, best_param
+
+
+/***/
+
+you might also want to do randmizedSearchCV..
+
+
+
+
+/******/?
+
+run test data aganist fit data 
